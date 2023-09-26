@@ -1,6 +1,6 @@
 
-//MUSICA DO JOGO ()
-const backgroundAudio = new Audio('../msc/Hero s Day Off Chiptune8-bitEight Bit.mp3'); // Substitua com o caminho do seu arquivo de som
+//MUSICA DO JOGO 
+const backgroundAudio = new Audio('../msc/Hero s Day Off Chiptune8-bitEight Bit.mp3');
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
