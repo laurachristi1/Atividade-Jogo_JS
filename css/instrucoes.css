@@ -1,0 +1,32 @@
+@font-face {
+    font-family: Fiend;
+    src: url(../foul_fiend/Foul\ Fiend.ttf);
+}
+
+body{
+    background-image: url(../img/fundo3.jpg);
+}
+
+#subtitulo{
+    font-family: 'Fiend';
+    font-size: 23px;
+    color: white;
+    text-align:start;
+    padding-left: 5%;
+    padding-top: 2%;
+}
+
+.container{
+    width: 1200px;
+    height: 750px;
+    background-color: black;
+    border-radius: 5px;
+    align-items: center;
+}
+
+section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px;
+}
