@@ -1,5 +1,4 @@
 const personagem = document.getElementById('personagem');
-let pxPersonagem = document.getElementById('spritePersonagem');
 let posicaoHorizontal = 0;
 let posicaoVertical = 0;
 const step = 10;
