@@ -78,7 +78,7 @@ section{
   
  }
 
-#btnMenu{
+#btn{
     width: 80px;
     height: 40px;
     cursor:pointer;
@@ -93,7 +93,7 @@ section{
     transition: background 0.5s;
 }
 
-#btnMenu:hover{
+#btn:hover{
     color: white;
     background-color: black;
     box-shadow: 1px 1px 0.5px 1px white;
