@@ -1,15 +1,15 @@
 
 //Efeitos Sonoros do Jogo
 const backgroundAudio = new Audio('../msc/backgroundAudio.mp3');
-const shootAudio = new Audio ('../msc/shoot.wav');
+const shootAudio = new Audio ('../msc/Laser Sound.mp3');
 
 document.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    backgroundAudio.play();
-  }
-});
-document.addEventListener('keydown', (event) => {
-  if (event.key === ' ') {
-    shootAudio.play();
+  switch (event.key) {
+    case 'Enter':
+      backgroundAudio.play()
+      break;
+    case ' ':
+      shootAudio.play()
+      break;
   }
 });
