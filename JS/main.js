@@ -1,8 +1,7 @@
 const personagem = document.getElementById('personagem');
-let pxPersonagem = document.getElementById('spritePersonagem');
-let posicaoHorizontal = 0;
-let posicaoVertical = 0;
-const step = 10;
+let posicaoHorizontal = 100;
+let posicaoVertical = 683;
+const step = 12;
 
 function updatePersonagemPosition() {
     personagem.style.left = posicaoHorizontal + 'px';
@@ -11,12 +10,6 @@ function updatePersonagemPosition() {
   
   document.addEventListener('keydown', (event) => {
     switch (event.key) {
-      case 'ArrowUp':
-        posicaoVertical -= step;
-        break;
-      case 'ArrowDown':
-        posicaoVertical += step;
-        break;
       case 'ArrowLeft':
         posicaoHorizontal -= step;
         break;
@@ -30,6 +23,8 @@ function updatePersonagemPosition() {
   
     updatePersonagemPosition();
   });
+
+        //Função de atirar
 
   function atirar() {
     const tiro = document.createElement('div');
@@ -51,6 +46,8 @@ function updatePersonagemPosition() {
       }
     }, 10);
   }
+
+       // Função de contagem de vidas
 
   const vidaCountElement = document.getElementById('vidaCount');
 
@@ -85,8 +82,77 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-const vilao = document.createElement('div');
-vilao.classList.add('vilao');
-vilao.style.left = '300px'; // Defina a posição inicial do vilão
-vilao.style.top = '200px';  // Defina a posição inicial do vilão
-document.body.appendChild(vilao);
+      // movimentação inimigo
+
+const inimigo = document.getElementById('inimigo');
+let inimigoPositionX = window.innerWidth; // Inimigo começa na extremidade direita
+
+function moverInimigo() {
+  inimigo.style.left = inimigoPositionX + 'px';
+  inimigoPositionX -= 2; // Movimento para a esquerda
+
+  // Reposicionar o inimigo quando ele sair da tela
+  if (inimigoPositionX < -95) {
+    inimigoPositionX = window.innerWidth;
+  }
+}
+setInterval(moverInimigo, 10);
+
+document.addEventListener('keydown', (event) => {
+  switch (event.key) {
+    case 'ArrowLeft':
+      personagem.style.left = (parseInt(personagem.style.left) || 0) - 10 + 'px';
+      break;
+    case 'ArrowRight':
+      personagem.style.left = (parseInt(personagem.style.left) || 0) + 10 + 'px';
+      break;
+  }
+
+});
+
+// ...
+document.addEventListener('keydown', (event) => {
+  switch (event.key) {
+    case 'ArrowLeft':
+      personagem.style.left = (parseInt(personagem.style.left) || 0) - 10 + 'px';
+      break;
+    case 'ArrowRight':
+      personagem.style.left = (parseInt(personagem.style.left) || 0) + 10 + 'px';
+      break;
+    case ' ':
+      atirar();
+      break;
+  }
+
+  // Verifique se o tiro atingiu o inimigo
+  const tiroRect = document.getElementById('tiro').getBoundingClientRect();
+  const inimigoRect = inimigo.getBoundingClientRect();
+
+  if (
+    tiroRect.left < inimigoRect.right &&
+    tiroRect.right > inimigoRect.left &&
+    tiroRect.top < inimigoRect.bottom &&
+    tiroRect.bottom > inimigoRect.top
+  ) {
+    // Tiro atingiu o inimigo
+    eliminarInimigo();
+  }
+});
+
+    // Função para eliminar o inimigo
+function eliminarInimigo() {
+  inimigoPositionX = window.innerWidth;
+
+    // Remove o inimigo da tela
+  inimigo.style.display = 'none';
+
+    //remove o inimigo da tela
+  const tiro = document.getElementById('tiro');
+  if (tiro) {
+    document.body.removeChild(tiro);
+}
+}
+
+
+
+  
