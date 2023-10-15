@@ -1,158 +1,125 @@
-const personagem = document.getElementById('personagem');
+const personagem = document.querySelector('.personagem');
+const tiros = [];
+const inimigos = [];
+
 let posicaoHorizontal = 100;
-let posicaoVertical = 683;
 const step = 12;
 
-function updatePersonagemPosition() {
-    personagem.style.left = posicaoHorizontal + 'px';
-    personagem.style.top = posicaoVertical + 'px';
-  }
-  
-  document.addEventListener('keydown', (event) => {
-    switch (event.key) {
-      case 'ArrowLeft':
-        posicaoHorizontal -= step;
-        break;
-      case 'ArrowRight':
-        posicaoHorizontal += step;
-        break;
-        case ' ':
-          atirar();
-          break;
-    }
-  
-    updatePersonagemPosition();
-  });
+function criarInimigo() {
+  const inimigo = document.createElement('img');
+  inimigo.classList.add('inimigo');
+  inimigo.src = './img/img_vilao/inimigo.gif';
+  document.body.appendChild(inimigo);
+  inimigos.push(inimigo);
 
-        //Função de atirar
+  // Distribua os inimigos uniformemente na parte direita da tela
+  const numInimigos = inimigos.length;
+  const alturaInimigo = 100; // Altura do inimigo
+  const espacoVertical = window.innerHeight / (numInimigos + 1);
+  const posicaoVertical = espacoVertical * (numInimigos + 1) - alturaInimigo;
 
-  function atirar() {
-    const tiro = document.createElement('div');
-    tiro.classList.add('tiro');
-    tiro.id = 'tiro'; 
-    document.body.appendChild(tiro);
-  
-    const personagemRect = personagem.getBoundingClientRect();
-    tiro.style.left = (personagemRect.left + personagemRect.width / 2) + 'px';
-    tiro.style.top = (personagemRect.top + personagemRect.height / 2) + 'px';
-  
-    const tiroInterval = setInterval(() => {
-      const tiroRect = tiro.getBoundingClientRect();
-      if (tiroRect.right < window.innerWidth) {
-        tiro.style.left = (parseInt(tiro.style.left) || 0) + 5 + 'px';
-      } else {
-        clearInterval(tiroInterval);
-        document.body.removeChild(tiro);
+  inimigo.style.left = window.innerWidth + 'px';
+  inimigo.style.top = posicaoVertical + 'px';
+
+  const inimigoInterval = setInterval(() => {
+    if (inimigo.offsetLeft > -50) {
+      inimigo.style.left = (inimigo.offsetLeft - 2) + 'px';
+
+      for (let i = tiros.length - 1; i >= 0; i--) {
+        const tiro = tiros[i];
+        const tiroRect = tiro.getBoundingClientRect();
+        const inimigoRect = inimigo.getBoundingClientRect();
+
+        if (
+          tiros.length > 0 && // Verifica se há pelo menos um tiro
+          tiroRect.left < inimigoRect.right &&
+          tiroRect.right > inimigoRect.left &&
+          tiroRect.top < inimigoRect.bottom &&
+          tiroRect.bottom > inimigoRect.top
+        ) {
+          eliminarInimigo(inimigo);
+          tiros.splice(i, 1);
+        }
       }
-    }, 10);
-  }
-
-       // Função de contagem de vidas
-
-  const vidaCountElement = document.getElementById('vidaCount');
-
-let vidaCount = 3;
-
-function updateVidaCount() {
-  vidaCountElement.textContent = vidaCount;
+    } else {
+      clearInterval(inimigoInterval);
+      document.body.removeChild(inimigo);
+      inimigos.splice(inimigos.indexOf(inimigo), 1);
+    }
+  }, 10);
 }
 
-function subtrairVida() {
-  vidaCount--;
-  updateVidaCount();
-
-  if (vidaCount <= 0) {
-    alert('Game Over! Vidas esgotadas.');
-    resetGame();
+// Função para criar inimigos com intervalo
+function criarInimigoComIntervalo() {
+  criarInimigo();
+  if (inimigos.length < 4) {
+    setTimeout(criarInimigoComIntervalo, 2000); // Crie um novo inimigo a cada 2 segundos
   }
 }
 
-function resetGame() {
-  vidaCount = 3;
-  updateLifeCount();
-  character.style.left = '0px';
-  character.style.top = '0px';
+// Chame a função para iniciar a criação de inimigos com intervalo
+criarInimigoComIntervalo();
+
+function eliminarInimigo(inimigo) {
+  inimigos.splice(inimigos.indexOf(inimigo), 1);
+  inimigo.style.display = 'none';
 }
 
-document.addEventListener('keydown', (event) => {
-  switch (event.key) {
-    case 'Enter':
-      subtrairVida();
-      break;
-  }
-});
+function atirar() {
+  const tiro = document.createElement('div');
+  tiro.classList.add('tiro');
+  document.body.appendChild(tiro);
 
-      // movimentação inimigo
+  // Ajuste a posição do tiro para sair da arma do personagem
+  tiro.style.left = (personagem.offsetLeft + personagem.offsetWidth) + 'px';
+  tiro.style.top = (personagem.offsetTop + personagem.offsetHeight / 2) + 'px';
+  tiros.push(tiro);
 
-const inimigo = document.getElementById('inimigo');
-let inimigoPositionX = window.innerWidth; // Inimigo começa na extremidade direita
-
-function moverInimigo() {
-  inimigo.style.left = inimigoPositionX + 'px';
-  inimigoPositionX -= 2; // Movimento para a esquerda
-
-  // Reposicionar o inimigo quando ele sair da tela
-  if (inimigoPositionX < -95) {
-    inimigoPositionX = window.innerWidth;
-  }
+  const tiroInterval = setInterval(() => {
+    if (tiro.offsetLeft < window.innerWidth) {
+      tiro.style.left = (tiro.offsetLeft + 5) + 'px';
+    } else {
+      clearInterval(tiroInterval);
+      document.body.removeChild(tiro);
+    }
+  }, 10);
 }
-setInterval(moverInimigo, 10);
 
-document.addEventListener('keydown', (event) => {
+function movimentarPersonagem(event) {
   switch (event.key) {
     case 'ArrowLeft':
-      personagem.style.left = (parseInt(personagem.style.left) || 0) - 10 + 'px';
+      posicaoHorizontal -= step;
       break;
     case 'ArrowRight':
-      personagem.style.left = (parseInt(personagem.style.left) || 0) + 10 + 'px';
-      break;
-  }
-
-});
-
-// ...
-document.addEventListener('keydown', (event) => {
-  switch (event.key) {
-    case 'ArrowLeft':
-      personagem.style.left = (parseInt(personagem.style.left) || 0) - 10 + 'px';
-      break;
-    case 'ArrowRight':
-      personagem.style.left = (parseInt(personagem.style.left) || 0) + 10 + 'px';
+      posicaoHorizontal += step;
       break;
     case ' ':
       atirar();
       break;
   }
+  personagem.style.left = posicaoHorizontal + 'px';
+}
 
-  // Verifique se o tiro atingiu o inimigo
-  const tiroRect = document.getElementById('tiro').getBoundingClientRect();
-  const inimigoRect = inimigo.getBoundingClientRect();
+// Função para verificar colisão entre dois elementos
+function colide(elemA, elemB) {
+  const a = elemA.getBoundingClientRect();
+  const b = elemB.getBoundingClientRect();
+  return (
+    a.left < b.right &&
+    a.right > b.left &&
+    a.top < b.bottom &&
+    a.bottom > b.top
+  );
+}
 
-  if (
-    tiroRect.left < inimigoRect.right &&
-    tiroRect.right > inimigoRect.left &&
-    tiroRect.top < inimigoRect.bottom &&
-    tiroRect.bottom > inimigoRect.top
-  ) {
-    // Tiro atingiu o inimigo
-    eliminarInimigo();
+document.addEventListener('keydown', movimentarPersonagem);
+
+function avancarParaProximoNivel() {
+  if (inimigosMortos >= 4) {
+    alert('Você avançou para o próximo nível!'); // Mensagem de avanço de nível
+    inimigosMortos = 0; // Redefina o contador de inimigos mortos
+    for (let i = 0; i < 4; i++) {
+      criarInimigo(); // Crie mais inimigos para o próximo nível
+    }
   }
-});
-
-    // Função para eliminar o inimigo
-function eliminarInimigo() {
-  inimigoPositionX = window.innerWidth;
-
-    // Remove o inimigo da tela
-  inimigo.style.display = 'none';
-
-    //remove o inimigo da tela
-  const tiro = document.getElementById('tiro');
-  if (tiro) {
-    document.body.removeChild(tiro);
 }
-}
-
-
-
-  
