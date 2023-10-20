@@ -43,6 +43,7 @@ function criarInimigo() {// Função para criar um novo inimigo
         ) {
           eliminarInimigo(inimigo); // Remove o inimigo do jogo
           tiros.splice(i, 1); // Remove o tiro do jogo
+          tiro.style.display = 'none'
         }
       }
     } else {
